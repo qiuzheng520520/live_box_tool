@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#获取直播地址列表
+url_data=`curl -s -X POST http://p.59card.com/mobile/live/anchors --cookie "yd_cookie=7c8fc52b-9a84-4168eba145a2d48aba6770addd04e536eac5" -H "User-Agent: okhttp/3.8.1" -H "Host: p.59card.com" -H "Content-Type: application/json; charset=utf-8" -H "token:7c6c5fae84c298e0e1d7edc82e77bf5c" --data '{"name":"jsonxiaomengzhus.txt","line":1,"sign":"3a2d58e1b9d1336c171d92db188daf1c","r":477329}'`
+
+#提取直播地址url
+player_url=`echo "$url_data" | grep -o -E "play_url[^}]*" | awk -F',' '{print $1}' | awk -F':' '{print $2":"$3}' | tr -d '\' | tr -d '"'`
+
+# echo "$player_url"
+
+#制作成m3u8直播列表文件
+echo "EXTM3U" > 59card.m3u8
+
+for str in $player_url
+do
+	echo "#EXTINF:-1," >> 59card.m3u8
+	echo "$str" >> 59card.m3u8
+done
+
+
+
+
+
